@@ -3,41 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#050508">
+  <meta name="theme-color" content="#04040a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Our Universe 🌌</title>
 
-  <!-- Премиальный шрифт -->
+  <!-- Премиальные шрифты с полной поддержкой кириллицы -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       1. CORE & VARIABLES
+       1. CORE VARIABLES & DESIGN TOKENS
        ========================================================================== */
     :root {
-      --bg-base: #050508;
-      --surface: rgba(25, 25, 35, 0.6);
-      --surface-border: rgba(255, 255, 255, 0.1);
-      
+      --bg-base: #04040a;
+      --bg-elevated: rgba(18, 19, 32, 0.72);
+      --surface: rgba(24, 26, 42, 0.55);
+      --surface-hover: rgba(34, 37, 58, 0.7);
+      --surface-border: rgba(255, 255, 255, 0.09);
+      --surface-border-light: rgba(255, 255, 255, 0.18);
+
       --brand-primary: #FF2E93;
       --brand-secondary: #00F0FF;
       --brand-tertiary: #8A2BE2;
-      
+      --brand-gold: #FFB800;
+      --brand-success: #00E676;
+
       --text-100: #FFFFFF;
-      --text-200: rgba(255, 255, 255, 0.75);
-      --text-300: rgba(255, 255, 255, 0.4);
-      
-      --danger: #FF3B30;
-      
-      --safe-top: env(safe-area-inset-top, 20px);
+      --text-200: rgba(255, 255, 255, 0.78);
+      --text-300: rgba(255, 255, 255, 0.45);
+      --text-400: rgba(255, 255, 255, 0.25);
+
+      --danger: #FF3B5C;
+
+      --safe-top: env(safe-area-inset-top, 16px);
       --safe-bottom: env(safe-area-inset-bottom, 20px);
-      
+
       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-      --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Unbounded', sans-serif;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-sans);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, textarea {
+      user-select: text;
+    }
 
     body {
       background-color: var(--bg-base);
@@ -50,365 +71,1378 @@
     }
 
     /* ==========================================================================
-       2. INSANE ANIMATED BACKGROUND
+       2. COSMIC CANVAS & NEBULA BACKGROUND
        ========================================================================== */
-    /* Аврора (Северное сияние) */
-    .aurora-bg {
-      position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -2;
-      background: 
-        radial-gradient(circle at 50% 50%, rgba(255, 46, 147, 0.15), transparent 60%),
-        radial-gradient(circle at 80% 20%, rgba(0, 240, 255, 0.15), transparent 50%),
-        radial-gradient(circle at 20% 80%, rgba(138, 43, 226, 0.15), transparent 50%);
-      filter: blur(80px);
-      animation: rotateAurora 20s linear infinite;
-    }
-    @keyframes rotateAurora {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.2); }
-      100% { transform: rotate(360deg) scale(1); }
+    .nebula-bg {
+      position: fixed;
+      inset: -40%;
+      width: 180%;
+      height: 180%;
+      z-index: -3;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255, 46, 147, 0.14), transparent 45%),
+        radial-gradient(circle at 75% 25%, rgba(0, 240, 255, 0.12), transparent 45%),
+        radial-gradient(circle at 25% 75%, rgba(138, 43, 226, 0.16), transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(59, 130, 246, 0.1), transparent 45%);
+      filter: blur(70px);
+      animation: rotateNebula 28s ease-in-out infinite alternate;
+      pointer-events: none;
     }
 
-    /* Летающие светлячки (Particles) */
-    .particles-layer {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
+    @keyframes rotateNebula {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(15deg) scale(1.12); }
+      100% { transform: rotate(-10deg) scale(1.04); }
     }
-    .particle {
-      position: absolute;
-      width: 3px; height: 3px; background: #fff; border-radius: 50%;
-      box-shadow: 0 0 10px #fff, 0 0 20px var(--brand-secondary);
-      animation: floatParticle linear infinite;
-      opacity: 0;
+
+    #starfieldCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -2;
+      pointer-events: none;
     }
-    @keyframes floatParticle {
-      0% { transform: translateY(100vh) scale(0); opacity: 0; }
-      20% { opacity: 1; transform: translateY(80vh) scale(1); }
-      80% { opacity: 1; transform: translateY(20vh) scale(1); }
-      100% { transform: translateY(0) scale(0); opacity: 0; }
+
+    .ambient-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(circle at 50% 30%, black 20%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at 50% 30%, black 20%, transparent 80%);
+      pointer-events: none;
     }
 
     /* ==========================================================================
-       3. APP LAYOUT & HEADER
+       3. HEADER & NAVIGATION
        ========================================================================== */
     .app-header {
-      padding: calc(var(--safe-top) + 15px) 24px 15px;
-      z-index: 10;
-      background: linear-gradient(180deg, rgba(5,5,8,0.95) 0%, rgba(5,5,8,0) 100%);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
+      padding: calc(var(--safe-top) + 12px) 20px 10px;
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(4, 4, 10, 0.92) 0%, rgba(4, 4, 10, 0.65) 75%, rgba(4, 4, 10, 0) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
     }
-    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    
-    .app-title {
-      font-size: 32px; font-weight: 700;
-      background: linear-gradient(to right, #fff, #a5a5b5);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: pulseText 3s ease-in-out infinite alternate;
-    }
-    @keyframes pulseText { 0% { filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); } 100% { filter: drop-shadow(0 0 15px rgba(255,255,255,0.5)); } }
 
-    /* Анимированный бейдж суммы */
-    .total-sum-badge {
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 8px 16px; border-radius: 30px; font-weight: 700; font-size: 16px;
-      color: var(--brand-secondary);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-      display: flex; align-items: center; gap: 4px;
-      animation: popIn 0.5s var(--ease-spring);
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
     }
-    .total-sum-badge span { font-size: 12px; opacity: 0.7; }
+
+    .brand-area {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 50%, var(--brand-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-subtitle {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-300);
+      letter-spacing: 0.3px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--surface-border);
+      color: var(--text-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--surface-border-light);
+      color: #fff;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.9);
+    }
+
+    .icon-btn.active {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: rgba(0, 240, 255, 0.4);
+      color: var(--brand-secondary);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Бейдж суммы */
+    .total-sum-badge {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.14), rgba(138, 43, 226, 0.18));
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      padding: 8px 14px;
+      border-radius: 16px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--brand-secondary);
+      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-spring);
+    }
+
+    .total-sum-badge:active {
+      transform: scale(0.94);
+    }
+
+    .total-sum-badge .currency {
+      font-size: 11px;
+      opacity: 0.75;
+      font-family: var(--font-sans);
+      font-weight: 800;
+    }
 
     /* ==========================================================================
-       4. HORIZONTAL TABS
+       4. TABS & SEARCH BAR
        ========================================================================== */
+    .tabs-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .tabs-container {
-      display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 10px;
       scrollbar-width: none;
+      flex: 1;
     }
     .tabs-container::-webkit-scrollbar { display: none; }
 
     .tab {
-      padding: 12px 24px; border-radius: 25px;
-      background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border);
-      color: var(--text-200); font-weight: 500; white-space: nowrap;
-      transition: all 0.4s var(--ease-spring); cursor: pointer; position: relative;
-      overflow: hidden;
+      padding: 10px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--surface-border);
+      color: var(--text-200);
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      transition: all 0.35s var(--ease-spring);
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .tab::after {
-      content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: 0.5s;
-    }
-    .tab.active {
-      background: var(--text-100); color: var(--bg-base); border-color: var(--text-100);
-      transform: scale(1.05); box-shadow: 0 5px 20px rgba(255,255,255,0.2);
-    }
-    .tab.active::after { left: 150%; transition: 0.7s; }
 
-    .add-tab-btn {
-      padding: 12px 20px; border-radius: 25px; border: 1px dashed rgba(255,255,255,0.3);
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    .tab:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .tab-count {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-200);
       transition: 0.3s;
     }
-    .add-tab-btn:active { transform: scale(0.9); }
+
+    .tab-edit-trigger {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.15);
+      color: var(--bg-base);
+      margin-left: 2px;
+      font-size: 11px;
+    }
+
+    .tab.active {
+      background: var(--text-100);
+      color: var(--bg-base);
+      border-color: var(--text-100);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.22);
+      font-weight: 700;
+    }
+
+    .tab.active .tab-count {
+      background: rgba(4, 4, 10, 0.12);
+      color: var(--bg-base);
+    }
+
+    .tab.active .tab-edit-trigger {
+      display: inline-flex;
+    }
+
+    .add-tab-btn {
+      padding: 10px 16px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-200);
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease-spring);
+      flex-shrink: 0;
+    }
+
+    .add-tab-btn:hover {
+      border-color: var(--brand-secondary);
+      color: var(--brand-secondary);
+      background: rgba(0, 240, 255, 0.06);
+    }
+
+    .add-tab-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Панель поиска и фильтров */
+    .controls-drawer {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: all 0.35s var(--ease-out);
+    }
+
+    .controls-drawer.open {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .search-filter-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 11px 38px 11px 38px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--surface-border);
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: 0.25s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--brand-secondary);
+      background: rgba(0, 240, 255, 0.05);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-300);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--surface-border);
+      color: var(--text-300);
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-pill.active {
+      background: rgba(255, 46, 147, 0.18);
+      border-color: rgba(255, 46, 147, 0.45);
+      color: #fff;
+    }
+
+    /* Полоса прогресса вселенной */
+    .universe-progress {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+      box-shadow: 0 0 12px var(--brand-secondary);
+      transition: width 0.6s var(--ease-out);
+    }
+
+    .progress-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-300);
+      min-width: 75px;
+      text-align: right;
+    }
 
     /* ==========================================================================
-       5. MAIN CONTENT & MAGIC CARDS
+       5. MAIN CONTENT & CARDS (LIST + BENTO GRID)
        ========================================================================== */
     .main-scroll {
-      flex: 1; overflow-y: auto; padding: 10px 24px calc(var(--safe-bottom) + 100px);
-      scrollbar-width: none; scroll-behavior: smooth;
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 20px calc(var(--safe-bottom) + 105px);
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
     }
     .main-scroll::-webkit-scrollbar { display: none; }
-    .tasks-grid { display: flex; flex-direction: column; gap: 20px; }
 
-    /* Обертка для градиентной рамки */
-    .card-wrapper {
-      position: relative; border-radius: 24px;
-      animation: cardSlideUp 0.6s var(--ease-spring) backwards;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
-    
-    /* Удаление карточки */
+
+    /* Режим компактной сетки (2 колонки) */
+    .tasks-grid.bento-mode {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (min-width: 680px) {
+      .tasks-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .tasks-grid.bento-mode {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .card-wrapper {
+      position: relative;
+      border-radius: 24px;
+      transition: transform 0.35s var(--ease-out), opacity 0.35s ease, filter 0.35s ease;
+    }
+
+    .card-wrapper.animate-enter {
+      animation: cardSlideUp 0.55s var(--ease-spring) backwards;
+    }
+
     .card-wrapper.removing {
-      transform: scale(0.8) translateY(30px); opacity: 0; pointer-events: none;
+      transform: scale(0.82) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
     }
 
     @keyframes cardSlideUp {
-      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Анимированная светящаяся рамка */
+    /* Неоновая аура вокруг карточки */
     .card-wrapper::before {
-      content: ''; position: absolute; inset: -2px; border-radius: 26px;
-      background: linear-gradient(45deg, var(--brand-primary), var(--brand-secondary), var(--brand-tertiary), var(--brand-primary));
-      background-size: 300% 300%;
-      animation: gradientBorder 4s linear infinite;
-      z-index: 0; opacity: 0.6; filter: blur(3px);
-      transition: 0.5s ease;
+      content: '';
+      position: absolute;
+      inset: -1.5px;
+      border-radius: 25.5px;
+      background: linear-gradient(135deg, rgba(255, 46, 147, 0.5), rgba(0, 240, 255, 0.4), rgba(138, 43, 226, 0.5));
+      z-index: 0;
+      opacity: 0.45;
+      transition: opacity 0.35s ease;
     }
-    @keyframes gradientBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    /* Сама карточка */
+    .card-wrapper:hover::before {
+      opacity: 0.85;
+    }
+
     .card {
-      position: relative; z-index: 1; background: var(--surface);
-      border-radius: 24px; padding: 20px; display: flex; flex-direction: column;
-      overflow: hidden; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
-    }
-    
-    /* Фото-фон */
-    .card.has-image { padding: 0; min-height: 280px; justify-content: flex-end; }
-    .card-image-bg {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover; background-position: center; z-index: 1;
-      transition: transform 0.7s var(--ease-out);
-    }
-    .card.has-image:active .card-image-bg { transform: scale(1.05); }
-    .card.has-image .card-content {
-      position: relative; z-index: 2; padding: 40px 20px 20px;
-      background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      background: var(--bg-elevated);
+      border-radius: 24px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 
+        0 12px 32px -8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.14);
     }
 
-    /* -------------------------------------------------------------
-       ФИКС БАГА С КНОПКАМИ: СТРОГАЯ FLEX-СЕТКА
-       ------------------------------------------------------------- */
-    .card-header {
-      display: flex; align-items: flex-start; gap: 16px;
-      position: relative; z-index: 2; width: 100%;
+    /* Карточка с фоновым фото */
+    .card.has-image {
+      padding: 0;
+      min-height: 250px;
+      justify-content: flex-end;
     }
-    
-    /* 1. Чекбокс всегда слева */
+
+    .tasks-grid.bento-mode .card.has-image {
+      min-height: 200px;
+    }
+
+    .card-image-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
+      transition: transform 0.6s var(--ease-out);
+    }
+
+    .card.has-image:hover .card-image-bg {
+      transform: scale(1.04);
+    }
+
+    /* Кнопка зума картинки */
+    .image-zoom-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 3;
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: rgba(4, 4, 10, 0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s var(--ease-spring);
+    }
+
+    .image-zoom-btn:active {
+      transform: scale(0.88);
+    }
+
+    .image-zoom-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .card-priority-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(4, 4, 10, 0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .card.has-image .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 50px 16px 16px;
+      background: linear-gradient(0deg, rgba(4, 4, 10, 0.96) 0%, rgba(4, 4, 10, 0.72) 55%, transparent 100%);
+    }
+
+    /* Строгая Flex-сетка внутри карточки */
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+    }
+
+    /* Чекбокс */
     .checkbox-container {
-      flex-shrink: 0; /* Не сжимается */
-      width: 30px; height: 30px; border-radius: 12px;
-      border: 2px solid var(--text-200);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.3s var(--ease-spring);
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      margin-top: 2px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s var(--ease-spring);
       position: relative;
     }
+
+    .checkbox-container:hover {
+      border-color: var(--brand-secondary);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+
     .checkbox-container svg {
-      width: 18px; height: 18px; fill: none; stroke: var(--bg-base);
-      stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
-      stroke-dasharray: 24; stroke-dashoffset: 24; transition: 0.4s ease;
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: var(--bg-base);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24;
+      transition: stroke-dashoffset 0.35s ease;
     }
 
-    /* 2. Текст в центре, занимает все свободное место */
-    .card-info { flex: 1; min-width: 0; /* min-width:0 нужен чтобы текст обрезался корректно */ }
+    /* Контент карточки */
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .card-title {
-      font-size: 18px; font-weight: 600; margin-bottom: 8px; line-height: 1.3;
-      word-wrap: break-word; transition: 0.3s;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-100);
+      word-wrap: break-word;
+      transition: color 0.3s;
     }
+
+    .tasks-grid.bento-mode .card-title {
+      font-size: 14px;
+    }
+
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
     .card-price {
-      display: inline-block; font-size: 14px; font-weight: 600; color: var(--brand-secondary);
-      background: rgba(0, 240, 255, 0.15); padding: 4px 12px; border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--brand-secondary);
+      background: rgba(0, 240, 255, 0.14);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 3px 10px;
+      border-radius: 8px;
     }
 
-    /* 3. Кнопка удаления строго справа */
-    .delete-btn {
-      flex-shrink: 0; width: 36px; height: 36px; border-radius: 12px;
-      background: rgba(255, 59, 48, 0.1); border: 1px solid rgba(255, 59, 48, 0.2);
-      color: var(--danger); display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.3s var(--ease-spring);
+    .card-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255, 46, 147, 0.2);
+      border: 1px solid rgba(255, 46, 147, 0.35);
+      padding: 3px 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.2s;
     }
-    .delete-btn:active { transform: scale(0.8) rotate(10deg); background: var(--danger); color: #fff; }
-    .delete-btn svg { width: 18px; height: 18px; fill: currentColor; }
 
-    /* --- Состояние ВЫПОЛНЕНО --- */
-    .card-wrapper.completed { filter: grayscale(50%); opacity: 0.6; }
-    .card-wrapper.completed::before { opacity: 0; /* Отключаем свечение */ }
-    .card-wrapper.completed .card { background: rgba(255,255,255,0.02); }
-    
+    .card-link-pill:hover {
+      background: rgba(255, 46, 147, 0.35);
+    }
+
+    /* Кнопки действий (Редактировать + Удалить) */
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .action-mini-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.25s var(--ease-spring);
+    }
+
+    .action-mini-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    .action-mini-btn:active {
+      transform: scale(0.85);
+    }
+
+    .action-mini-btn.delete:hover {
+      background: rgba(255, 59, 92, 0.2);
+      border-color: rgba(255, 59, 92, 0.4);
+      color: var(--danger);
+    }
+
+    .action-mini-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Состояние ВЫПОЛНЕНО */
+    .card-wrapper.completed {
+      opacity: 0.62;
+    }
+    .card-wrapper.completed::before {
+      opacity: 0.12;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .card-wrapper.completed .card-image-bg {
+      filter: grayscale(65%);
+    }
     .card-wrapper.completed .checkbox-container {
-      background: var(--brand-secondary); border-color: var(--brand-secondary);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); transform: scale(1.1);
+      background: var(--brand-secondary);
+      border-color: var(--brand-secondary);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.5);
     }
-    .card-wrapper.completed .checkbox-container svg { stroke-dashoffset: 0; }
-    
+    .card-wrapper.completed .checkbox-container svg {
+      stroke-dashoffset: 0;
+    }
     .card-wrapper.completed .card-title {
-      text-decoration: line-through; color: var(--text-300);
-      text-shadow: 0 0 10px rgba(255,255,255,0.2);
+      text-decoration: line-through;
+      color: var(--text-300);
     }
 
-    /* Анимация при клике на чекбокс (Круг расходится) */
+    /* Ripple-эффект чекбокса */
     .ripple {
-      position: absolute; width: 100%; height: 100%; border-radius: 50%;
-      background: var(--brand-secondary); opacity: 0; pointer-events: none;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--brand-secondary);
+      opacity: 0;
+      pointer-events: none;
     }
-    .checkbox-container.animating .ripple { animation: rippleEffect 0.6s ease-out; }
-    @keyframes rippleEffect { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3); opacity: 0; } }
+    .checkbox-container.animating .ripple {
+      animation: rippleEffect 0.55s ease-out;
+    }
+    @keyframes rippleEffect {
+      0% { transform: scale(1); opacity: 0.75; }
+      100% { transform: scale(2.8); opacity: 0; }
+    }
 
     /* ==========================================================================
-       6. ВЗРЫВ ЧАСТИЦ ПРИ ВЫПОЛНЕНИИ (CONFETTI JS-СЛОЙ)
-       ========================================================================== */
-    .confetti {
-      position: fixed; width: 8px; height: 8px; border-radius: 50%;
-      pointer-events: none; z-index: 9999;
-    }
-
-    /* ==========================================================================
-       7. FLOATING ACTION BUTTON (Плюс)
+       6. FLOATING ACTION BUTTON (FAB)
        ========================================================================== */
     .fab {
-      position: fixed; bottom: calc(var(--safe-bottom) + 24px); right: 24px;
-      width: 64px; height: 64px; border-radius: 22px; border: none;
-      background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
-      box-shadow: 0 10px 30px rgba(255, 46, 147, 0.5);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 100; transition: 0.3s var(--ease-spring);
-      animation: fabBreathe 3s infinite alternate;
+      position: fixed;
+      bottom: calc(var(--safe-bottom) + 20px);
+      right: 24px;
+      height: 58px;
+      padding: 0 22px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-tertiary), var(--brand-secondary));
+      background-size: 200% 200%;
+      box-shadow: 0 12px 32px rgba(255, 46, 147, 0.45);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      z-index: 90;
+      transition: all 0.3s var(--ease-spring);
+      animation: fabGradient 5s ease infinite;
     }
-    .fab::before { content: '+'; color: #fff; font-size: 34px; font-weight: 300; transition: 0.4s; }
-    .fab:active { transform: scale(0.85); }
-    @keyframes fabBreathe { 0% { box-shadow: 0 10px 20px rgba(255, 46, 147, 0.4); } 100% { box-shadow: 0 15px 40px rgba(0, 240, 255, 0.6); } }
+
+    @keyframes fabGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .fab svg {
+      width: 22px;
+      height: 22px;
+      stroke: #fff;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    .fab:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 16px 36px rgba(0, 240, 255, 0.5);
+    }
+
+    .fab:active {
+      transform: scale(0.92);
+    }
 
     /* ==========================================================================
-       8. MODERN MODALS
+       7. MODALS, LIGHTBOX & TOASTS
        ========================================================================== */
     .modal-backdrop {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-      z-index: 200; opacity: 0; pointer-events: none; transition: 0.4s;
-      display: flex; align-items: flex-end;
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 2, 6, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
     }
-    .modal-backdrop.active { opacity: 1; pointer-events: all; }
-    
+
+    @media (min-width: 640px) {
+      .modal-backdrop {
+        align-items: center;
+        padding: 20px;
+      }
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
     .modal-sheet {
-      width: 100%; background: rgba(20, 20, 25, 0.95);
-      border-radius: 36px 36px 0 0; padding: 32px 24px calc(var(--safe-bottom) + 24px);
-      transform: translateY(100%); transition: transform 0.6s var(--ease-spring);
-      border-top: 1px solid rgba(255,255,255,0.1); box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 480px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      background: rgba(18, 19, 30, 0.96);
+      border-radius: 32px 32px 0 0;
+      padding: 28px 22px calc(var(--safe-bottom) + 22px);
+      transform: translateY(100%);
+      transition: transform 0.5s var(--ease-spring);
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.6);
     }
-    .modal-backdrop.active .modal-sheet { transform: translateY(0); }
 
-    .modal-drag-pill { width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 5px; margin: -16px auto 24px; }
-    .modal-sheet h2 { font-size: 24px; margin-bottom: 24px; background: linear-gradient(90deg, #fff, var(--brand-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    
-    .input-group { margin-bottom: 16px; }
-    .input-group input {
-      width: 100%; padding: 20px; border-radius: 20px;
-      background: rgba(255,255,255,0.05); border: 1px solid var(--surface-border);
-      color: #fff; font-size: 16px; outline: none; transition: 0.3s;
+    @media (min-width: 640px) {
+      .modal-sheet {
+        border-radius: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        padding: 28px;
+        transform: translateY(30px) scale(0.95);
+      }
+      .modal-backdrop.active .modal-sheet {
+        transform: translateY(0) scale(1);
+      }
     }
-    .input-group input:focus { border-color: var(--brand-primary); background: rgba(255, 46, 147, 0.05); box-shadow: 0 0 15px rgba(255, 46, 147, 0.2); transform: scale(1.02); }
 
+    .modal-backdrop.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-drag-pill {
+      width: 42px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+      margin: -10px auto 20px;
+    }
+
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-sheet h2 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #fff, var(--brand-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .close-modal-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text-200);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-300);
+      margin-bottom: 6px;
+      margin-left: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-group {
+      margin-bottom: 14px;
+    }
+
+    .input-group input, .input-group select {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--surface-border);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      outline: none;
+      transition: 0.25s;
+    }
+
+    .input-group select option {
+      background: #12131e;
+      color: #fff;
+    }
+
+    .input-group input:focus, .input-group select:focus {
+      border-color: var(--brand-primary);
+      background: rgba(255, 46, 147, 0.06);
+      box-shadow: 0 0 0 3px rgba(255, 46, 147, 0.15);
+    }
+
+    /* Приоритеты / Теги */
+    .priority-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .priority-chip {
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--surface-border);
+      color: var(--text-200);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.2s;
+    }
+
+    .priority-chip.selected {
+      background: rgba(0, 240, 255, 0.16);
+      border-color: var(--brand-secondary);
+      color: #fff;
+    }
+
+    /* Загрузка фото */
     .file-upload-wrapper {
-      position: relative; width: 100%; height: 110px;
-      border: 2px dashed rgba(255,255,255,0.2); border-radius: 20px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--text-300); overflow: hidden; margin-bottom: 16px; transition: 0.3s;
+      position: relative;
+      width: 100%;
+      height: 120px;
+      border: 1.5px dashed rgba(255, 255, 255, 0.22);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--text-300);
+      font-size: 14px;
+      font-weight: 600;
+      overflow: hidden;
+      margin-bottom: 16px;
+      transition: 0.25s;
     }
-    .file-upload-wrapper:active { transform: scale(0.98); background: rgba(255,255,255,0.05); }
-    .file-upload-wrapper input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-    .image-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; display: none; }
+
+    .file-upload-wrapper:hover {
+      border-color: var(--brand-secondary);
+      background: rgba(0, 240, 255, 0.04);
+    }
+
+    .file-upload-wrapper input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .image-preview {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      display: none;
+      z-index: 1;
+    }
+
+    .remove-image-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 4;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+    }
 
     .btn-submit {
-      width: 100%; padding: 20px; border-radius: 20px; border: none;
-      background: var(--text-100); color: var(--bg-base); font-size: 18px; font-weight: 700;
-      cursor: pointer; transition: 0.3s var(--ease-spring); margin-top: 10px;
+      width: 100%;
+      padding: 17px;
+      border-radius: 16px;
+      border: none;
+      background: linear-gradient(135deg, #FFFFFF, #E2E8F0);
+      color: var(--bg-base);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.3s var(--ease-spring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    .btn-submit:active { transform: scale(0.95); background: var(--brand-secondary); }
 
-    .loader { display: none; border: 3px solid rgba(0,0,0,0.1); border-top-color: var(--bg-base); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto; }
+    .btn-submit:active {
+      transform: scale(0.96);
+    }
+
+    .btn-danger-outline {
+      width: 100%;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 59, 92, 0.35);
+      background: rgba(255, 59, 92, 0.1);
+      color: var(--danger);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.25s;
+    }
+
+    .btn-danger-outline:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .loader {
+      display: none;
+      border: 3px solid rgba(0, 0, 0, 0.15);
+      border-top-color: var(--bg-base);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      animation: spin 0.8s linear infinite;
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .empty-state { text-align: center; color: var(--text-300); margin-top: 50vh; transform: translateY(-50%); font-size: 18px; animation: popIn 0.5s var(--ease-out); }
-    @keyframes popIn { from { opacity: 0; transform: translateY(-30%) scale(0.9); } to { opacity: 1; transform: translateY(-50%) scale(1); } }
+    /* Пустое состояние */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-300);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .empty-orb {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(0, 240, 255, 0.35), rgba(255, 46, 147, 0.2), transparent 70%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin-bottom: 4px;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+    }
+
+    .empty-state h3 {
+      color: var(--text-100);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      max-width: 280px;
+      line-height: 1.45;
+    }
+
+    /* Полноэкранный просмотр фото (Lightbox) */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(20px);
+      z-index: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s ease;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox img {
+      max-width: 100%;
+      max-height: 85dvh;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      transform: scale(0.92);
+      transition: transform 0.35s var(--ease-spring);
+      object-fit: contain;
+    }
+
+    .lightbox.active img {
+      transform: scale(1);
+    }
+
+    /* Всплывающие уведомления (Toast) */
+    .toast-container {
+      position: fixed;
+      top: calc(var(--safe-top) + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+      width: max-content;
+      max-width: 90vw;
+    }
+
+    .toast {
+      background: rgba(20, 22, 36, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: toastIn 0.35s var(--ease-spring);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-16px) scale(0.9); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Фон (Аврора) -->
-  <div class="aurora-bg"></div>
-  
-  <!-- Генерация летающих частиц через JS -->
-  <div class="particles-layer" id="particlesLayer"></div>
+  <!-- Фоновая туманность и интерактивное звездное небо -->
+  <div class="nebula-bg"></div>
+  <canvas id="starfieldCanvas"></canvas>
+  <div class="ambient-grid"></div>
+
+  <!-- Контейнер для уведомлений -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <!-- Шапка -->
   <header class="app-header">
     <div class="header-top">
-      <div class="app-title">Our Space ✨</div>
-      <div class="total-sum-badge" id="totalSumBadge" style="display: none;">
-        <span id="sumValue">0</span> <span>₽</span>
+      <div class="brand-area">
+        <div class="app-title">Our Space ✨</div>
+        <div class="app-subtitle" id="headerSubtitle">Загрузка вселенной...</div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Бейдж суммы -->
+        <div class="total-sum-badge" id="totalSumBadge" style="display: none;" title="Нажмите для подробностей бюджета">
+          <span id="sumValue">0</span>
+          <span class="currency">₽</span>
+        </div>
+
+        <!-- Поиск и фильтр -->
+        <button class="icon-btn" id="searchToggleBtn" title="Поиск и фильтры">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+
+        <!-- Переключатель сетки (1 или 2 колонки) -->
+        <button class="icon-btn" id="viewModeBtn" title="Изменить вид карточек">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect></svg>
+        </button>
       </div>
     </div>
-    
-    <div class="tabs-container" id="tabsContainer"></div>
+
+    <!-- Выдвижная панель поиска и фильтрации -->
+    <div class="controls-drawer" id="controlsDrawer">
+      <div class="search-filter-bar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="searchInput" placeholder="Найти мечту или покупку...">
+        </div>
+        <div class="filter-pills">
+          <div class="filter-pill active" data-filter="all">Все карточки</div>
+          <div class="filter-pill" data-filter="active">В планах ✨</div>
+          <div class="filter-pill" data-filter="completed">Исполнено ✅</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Горизонтальные вкладки (Категории) -->
+    <div class="tabs-row">
+      <div class="tabs-container" id="tabsContainer"></div>
+    </div>
+
+    <!-- Прогресс-бар текущей категории -->
+    <div class="universe-progress" id="progressWrapper" style="display: none;">
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-label" id="progressLabel">0 / 0</div>
+    </div>
   </header>
 
-  <!-- Список -->
+  <!-- Основной список карточек -->
   <main class="main-scroll" id="mainScroll">
     <div class="tasks-grid" id="tasksList">
-      <div class="empty-state">Загрузка магии... 🌌</div>
+      <div class="empty-state">
+        <div class="empty-orb">🌌</div>
+        <h3>Синхронизация космоса...</h3>
+        <p>Загружаем ваши общие мечты и цели</p>
+      </div>
     </div>
   </main>
 
-  <button class="fab" id="fabBtn"></button>
+  <!-- Кнопка создания -->
+  <button class="fab" id="fabBtn">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span>Мечта</span>
+  </button>
 
-  <!-- Модалки -->
+  <!-- МОДАЛКА: ДОБАВИТЬ / РЕДАКТИРОВАТЬ МЕЧТУ -->
   <div class="modal-backdrop" id="taskModal">
     <div class="modal-sheet">
       <div class="modal-drag-pill"></div>
-      <h2>Добавить мечту</h2>
-      <div class="input-group"><input type="text" id="taskTitle" placeholder="Что это? (Например: Яндекс дропс)"></div>
-      <div class="input-group"><input type="text" id="taskPrice" placeholder="Цена или описание (+- 6500₽)"></div>
+      <div class="modal-header-row">
+        <h2 id="taskModalTitle">Добавить мечту</h2>
+        <button class="close-modal-btn" onclick="closeAllModals()">✕</button>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Название</label>
+        <input type="text" id="taskTitle" placeholder="Например: Яндекс Станция / Поездка в горы">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Цена или описание</label>
+        <input type="text" id="taskPrice" placeholder="Например: 14 990 ₽ или описание">
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Ссылка (необязательно)</label>
+        <input type="url" id="taskLink" placeholder="https://...">
+      </div>
+
+      <div class="input-group" id="categorySelectGroup" style="display: none;">
+        <label class="input-label">Вселенная (Вкладка)</label>
+        <select id="taskCategorySelect"></select>
+      </div>
+
+      <label class="input-label">Метка настроения</label>
+      <div class="priority-selector" id="prioritySelector">
+        <div class="priority-chip selected" data-prio="">Без метки</div>
+        <div class="priority-chip" data-prio="🔥 Главная цель">🔥 Главная цель</div>
+        <div class="priority-chip" data-prio="💖 Хотелка">💖 Хотелка</div>
+        <div class="priority-chip" data-prio="🎁 Подарок">🎁 Подарок</div>
+        <div class="priority-chip" data-prio="✈️ Впечатление">✈️ Впечатление</div>
+      </div>
+
+      <label class="input-label">Фотография</label>
       <div class="file-upload-wrapper" id="uploadWrapper">
-        <span id="uploadText">📸 Прикрепить фото</span>
+        <span id="uploadText">📸 Нажмите или перетащите фото</span>
+        <span style="font-size: 11px; opacity: 0.6;">Авто-сжатие без потери качества</span>
         <input type="file" id="taskImage" accept="image/*">
         <div class="image-preview" id="imagePreview"></div>
+        <button type="button" class="remove-image-btn" id="removeImageBtn">Удалить фото</button>
       </div>
-      <button class="btn-submit" id="saveTaskBtn"><span class="btn-text">Создать</span><div class="loader"></div></button>
+
+      <button class="btn-submit" id="saveTaskBtn">
+        <span class="btn-text" id="saveTaskBtnText">Сохранить</span>
+        <div class="loader"></div>
+      </button>
     </div>
   </div>
 
+  <!-- МОДАЛКА: СОЗДАТЬ / РЕДАКТИРОВАТЬ КАТЕГОРИЮ -->
   <div class="modal-backdrop" id="groupModal">
     <div class="modal-sheet">
       <div class="modal-drag-pill"></div>
-      <h2>Новая вселенная</h2>
-      <div class="input-group"><input type="text" id="groupName" placeholder="Название (Куда сходить, Покупки...)"></div>
-      <button class="btn-submit" id="saveGroupBtn">Создать</button>
+      <div class="modal-header-row">
+        <h2 id="groupModalTitle">Новая вселенная</h2>
+        <button class="close-modal-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Название вкладки</label>
+        <input type="text" id="groupName" placeholder="Покупки, Куда сходить, Путешествия...">
+      </div>
+      <button class="btn-submit" id="saveGroupBtn">Сохранить</button>
+      <button class="btn-danger-outline" id="deleteGroupBtn" style="display: none;">Удалить вселенную и карточки</button>
     </div>
+  </div>
+
+  <!-- МОДАЛКА: ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal-sheet">
+      <div class="modal-drag-pill"></div>
+      <div class="modal-header-row">
+        <h2 id="confirmTitle">Подтверждение</h2>
+        <button class="close-modal-btn" onclick="closeAllModals()">✕</button>
+      </div>
+      <p id="confirmMessage" style="color: var(--text-200); font-size: 15px; line-height: 1.5; margin-bottom: 20px;"></p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-submit" style="background: rgba(255,255,255,0.1); color: #fff;" onclick="closeAllModals()">Отмена</button>
+        <button class="btn-submit" id="confirmActionBtn" style="background: var(--danger); color: #fff;">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО (LIGHTBOX) -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="Full view">
   </div>
 
   <script type="module">
@@ -416,55 +1450,149 @@
     import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // 🛑 ВАЖНО: ВСТАВЬ СЮДА СВОИ КЛЮЧИ!
+    // =================================================================
+    // 1. КОНФИГУРАЦИЯ FIREBASE (ПОЛНАЯ СОВМЕСТИМОСТЬ СО СТАРЫМИ ДАННЫМИ)
+    // =================================================================
     const firebaseConfig = {
-      apiKey: "AIzaSyDz5wPBB05uU0q1vlQlgyGWmnyVwt3APk0",
-      authDomain: "ourwishlist-b6bd7.firebaseapp.com",
-      databaseURL: "https://ourwishlist-b6bd7-default-rtdb.firebaseio.com",
-      projectId: "ourwishlist-b6bd7",
-      storageBucket: "ourwishlist-b6bd7.firebasestorage.app",
-      messagingSenderId: "170914082679",
-      appId: "1:170914082679:web:2bc01fc83713a230fe3b72",
-      measurementId: "G-LTX7TDL8KP"
+      apiKey: "AIzaSyDz5wPBB05uU0q1vlQlgyGWmnyVwt3APk0",
+      authDomain: "ourwishlist-b6bd7.firebaseapp.com",
+      databaseURL: "https://ourwishlist-b6bd7-default-rtdb.firebaseio.com",
+      projectId: "ourwishlist-b6bd7",
+      storageBucket: "ourwishlist-b6bd7.firebasestorage.app",
+      messagingSenderId: "170914082679",
+      appId: "1:170914082679:web:2bc01fc83713a230fe3b72",
+      measurementId: "G-LTX7TDL8KP"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const storage = getStorage(app);
 
+    // Состояние приложения
     let localData = { categories: {}, tasks: {} };
-    let currentTabId = null;
-    let selectedFile = null;
-    let currentSum = 0; // Для анимации счетчика
+    let currentTabId = localStorage.getItem('ourspace_last_tab') || null;
+    let isBentoMode = localStorage.getItem('ourspace_bento') === 'true';
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let shouldAnimateEntrance = true;
 
-    // DOM Элементы
+    // Состояние форм редактирования
+    let editingTaskId = null;
+    let editingGroupId = null;
+    let selectedFile = null;
+    let existingImageUrl = null;
+    let selectedPriority = '';
+    let currentSum = 0;
+
+    // DOM-элементы
     const tabsContainer = document.getElementById('tabsContainer');
     const tasksList = document.getElementById('tasksList');
     const totalSumBadge = document.getElementById('totalSumBadge');
     const sumValue = document.getElementById('sumValue');
+    const headerSubtitle = document.getElementById('headerSubtitle');
+    const progressWrapper = document.getElementById('progressWrapper');
+    const progressFill = document.getElementById('progressFill');
+    const progressLabel = document.getElementById('progressLabel');
+    const viewModeBtn = document.getElementById('viewModeBtn');
 
-    // =================================================================
-    // 🌌 ГЕНЕРАТОР ФОНОВЫХ ЧАСТИЦ
-    // =================================================================
-    function initBackgroundParticles() {
-      const layer = document.getElementById('particlesLayer');
-      for(let i = 0; i < 20; i++) {
-        let p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + 'vw';
-        p.style.animationDuration = (Math.random() * 5 + 5) + 's';
-        p.style.animationDelay = (Math.random() * 5) + 's';
-        layer.appendChild(p);
-      }
+    if (isBentoMode) {
+      tasksList.classList.add('bento-mode');
+      viewModeBtn.classList.add('active');
     }
-    initBackgroundParticles();
 
     // =================================================================
-    // 🎉 ВЗРЫВ ЧАСТИЦ (CONFETTI) ПРИ ВЫПОЛНЕНИИ ЗАДАЧИ
+    // 2. ИНТЕРАКТИВНОЕ ЗВЕЗДНОЕ НЕБО (60 FPS CANVAS)
     // =================================================================
-    window.burstConfetti = (x, y) => {
-      const colors = ['#FF2E93', '#00F0FF', '#8A2BE2', '#FFFFFF'];
-      for (let i = 0; i < 25; i++) {
+    function initStarfield() {
+      const canvas = document.getElementById('starfieldCanvas');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      const stars = [];
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      for (let i = 0; i < 65; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: Math.random() * 1.6 + 0.4,
+          speedY: -(Math.random() * 0.25 + 0.05),
+          alpha: Math.random(),
+          deltaAlpha: (Math.random() * 0.015 + 0.005) * (Math.random() < 0.5 ? 1 : -1),
+          hue: Math.random() > 0.7 ? '#00F0FF' : (Math.random() > 0.5 ? '#FF2E93' : '#FFFFFF')
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        for (const s of stars) {
+          s.y += s.speedY;
+          if (s.y < 0) {
+            s.y = height;
+            s.x = Math.random() * width;
+          }
+          s.alpha += s.deltaAlpha;
+          if (s.alpha <= 0.15 || s.alpha >= 0.95) s.deltaAlpha *= -1;
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = s.hue;
+          ctx.globalAlpha = Math.max(0.1, Math.min(1, s.alpha));
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = s.hue;
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    initStarfield();
+
+    // =================================================================
+    // 3. ЗВУКОВЫЕ ЭФФЕКТЫ, КОНФЕТТИ И TOAST-УВЕДОМЛЕНИЯ
+    // =================================================================
+    function playSuccessChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.06);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.06 + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.06);
+          osc.stop(ctx.currentTime + idx * 0.06 + 0.35);
+        });
+      } catch (e) {}
+    }
+
+    function showToast(text, icon = '✨') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>${icon}</span><span>${escapeHtml(text)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = '0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 2400);
+    }
+
+    function burstConfetti(x, y) {
+      const colors = ['#FF2E93', '#00F0FF', '#8A2BE2', '#00E676', '#FFFFFF'];
+      for (let i = 0; i < 28; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
@@ -473,29 +1601,56 @@
         document.body.appendChild(confetti);
 
         const angle = Math.random() * Math.PI * 2;
-        const velocity = 50 + Math.random() * 100;
+        const velocity = 45 + Math.random() * 110;
         const tx = Math.cos(angle) * velocity;
-        const ty = Math.sin(angle) * velocity - 50; // Гравитация вверх
+        const ty = Math.sin(angle) * velocity - 45;
 
         confetti.animate([
           { transform: 'translate(0, 0) scale(1)', opacity: 1 },
           { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
-        ], { duration: 600 + Math.random() * 400, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' });
+        ], { duration: 650 + Math.random() * 350, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
 
         setTimeout(() => confetti.remove(), 1000);
       }
-    };
+    }
 
     // =================================================================
-    // 🔢 АНИМАЦИЯ СЧЕТЧИКА СУММЫ (Бегущие цифры)
+    // 4. ПАРСЕР ЦЕНЫ И СЖАТИЕ КАРТИНОК (CANVAS)
     // =================================================================
+    function extractPrice(str) {
+      if (!str) return 0;
+      // Убираем ссылки, чтобы цифры из URL не считались ценой
+      const withoutUrls = str.replace(/https?:\/\/\S+/gi, '');
+      // Склеиваем разряды чисел вида "14 990" или "6 500"
+      const normalized = withoutUrls.replace(/(\d)\s+(?=\d{3}\b)/g, '$1');
+      const matches = normalized.toLowerCase().match(/\d+(?:[.,]\d+)?\s*(к|k|тыс)?/g);
+      if (!matches) return 0;
+
+      let maxNum = 0;
+      matches.forEach(m => {
+        const isK = m.includes('к') || m.includes('k') || m.includes('тыс');
+        let val = parseFloat(m.replace(/[кkтыс\s]/g, '').replace(',', '.'));
+        if (isK) val *= 1000;
+        if (val > maxNum) maxNum = val;
+      });
+      return maxNum;
+    }
+
+    function extractFirstUrl(str) {
+      if (!str) return null;
+      const match = str.match(/https?:\/\/[^\s]+/i);
+      return match ? match[0] : null;
+    }
+
     function animateValue(start, end, duration) {
-      if (start === end) return;
+      if (start === end) {
+        sumValue.innerText = end.toLocaleString('ru-RU');
+        return;
+      }
       let startTimestamp = null;
       const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        // Эффект замедления к концу
         const easeOut = 1 - Math.pow(1 - progress, 3);
         const current = Math.floor(start + easeOut * (end - start));
         sumValue.innerText = current.toLocaleString('ru-RU');
@@ -508,39 +1663,55 @@
       window.requestAnimationFrame(step);
     }
 
-    // Парсер суммы
-    function extractPrice(str) {
-      if (!str) return 0;
-      const clean = str.toLowerCase().replace(/\s+/g, '');
-      const matches = clean.match(/\d+(?:[.,]\d+)?(к|k)?/g);
-      if (!matches) return 0;
-      let maxNum = 0;
-      matches.forEach(m => {
-        let isK = m.includes('к') || m.includes('k');
-        let val = parseFloat(m.replace(/[кk]/g, '').replace(',', '.'));
-        if (isK) val *= 1000;
-        if (val > maxNum) maxNum = val;
+    // Быстрое сжатие фото перед отправкой в Firebase Storage
+    function compressImage(file, maxWidth = 1280, quality = 0.82) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+              resolve(blob || file);
+            }, 'image/jpeg', quality);
+          };
+          img.onerror = () => resolve(file);
+          img.src = event.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
       });
-      return maxNum;
     }
 
     // =================================================================
-    // СИНХРОНИЗАЦИЯ FIREBASE
+    // 5. СИНХРОНИЗАЦИЯ С FIREBASE REALTIME DATABASE
     // =================================================================
     const dbRef = ref(db, 'app_data');
     onValue(dbRef, (snapshot) => {
       const data = snapshot.val();
-      if (!data) { localData = { categories: {}, tasks: {} }; renderUI(); return; }
-      localData = data;
+      localData = data || { categories: {}, tasks: {} };
       const catIds = Object.keys(localData.categories || {});
-      if (!currentTabId || !localData.categories[currentTabId]) {
+
+      if (!currentTabId || !localData.categories?.[currentTabId]) {
         currentTabId = catIds[0] || null;
+        if (currentTabId) localStorage.setItem('ourspace_last_tab', currentTabId);
       }
       renderUI();
+      shouldAnimateEntrance = false;
     });
 
     // =================================================================
-    // РЕНДЕР ИНТЕРФЕЙСА
+    // 6. РЕНДЕР ИНТЕРФЕЙСА
     // =================================================================
     function renderUI() {
       renderTabs();
@@ -550,224 +1721,572 @@
     function renderTabs() {
       tabsContainer.innerHTML = '';
       const categories = localData.categories || {};
-      
+      const allTasks = localData.tasks || {};
+
       Object.keys(categories).forEach(catId => {
         const cat = categories[catId];
+        // Считаем количество невыполненных задач во вкладке
+        const activeCount = Object.values(allTasks).filter(t => t && t.catId === catId && !t.completed).length;
+
         const btn = document.createElement('div');
         btn.className = `tab ${catId === currentTabId ? 'active' : ''}`;
-        btn.innerHTML = `${cat.name}`;
-        
-        let pressTimer;
-        btn.addEventListener('touchstart', () => { pressTimer = setTimeout(() => confirmDeleteGroup(catId), 1000); });
-        btn.addEventListener('touchend', () => clearTimeout(pressTimer));
-        btn.addEventListener('contextmenu', (e) => { e.preventDefault(); confirmDeleteGroup(catId); });
-        
-        btn.onclick = () => { currentTabId = catId; renderUI(); };
+        btn.innerHTML = `
+          <span>${escapeHtml(cat.name)}</span>
+          ${activeCount > 0 ? `<span class="tab-count">${activeCount}</span>` : ''}
+          <span class="tab-edit-trigger" title="Настроить вкладку">✎</span>
+        `;
+
+        btn.addEventListener('click', (e) => {
+          if (e.target.classList.contains('tab-edit-trigger')) {
+            e.stopPropagation();
+            openEditGroupModal(catId);
+            return;
+          }
+          if (currentTabId !== catId) {
+            currentTabId = catId;
+            localStorage.setItem('ourspace_last_tab', catId);
+            shouldAnimateEntrance = true;
+            renderUI();
+          } else {
+            openEditGroupModal(catId);
+          }
+        });
+
         tabsContainer.appendChild(btn);
       });
 
       const addBtn = document.createElement('div');
-      addBtn.className = 'add-tab-btn'; addBtn.innerText = '+';
-      addBtn.onclick = () => document.getElementById('groupModal').classList.add('active');
+      addBtn.className = 'add-tab-btn';
+      addBtn.innerHTML = `<span>+ Вселенная</span>`;
+      addBtn.onclick = () => openCreateGroupModal();
       tabsContainer.appendChild(addBtn);
     }
 
     function renderTasks() {
       tasksList.innerHTML = '';
       const allTasks = localData.tasks || {};
+      const totalGlobalTasks = Object.keys(allTasks).length;
+      const totalGlobalCompleted = Object.values(allTasks).filter(t => t?.completed).length;
+      headerSubtitle.innerText = totalGlobalTasks > 0
+        ? `Всего целей: ${totalGlobalTasks} • Исполнено: ${totalGlobalCompleted}`
+        : 'Ваше общее пространство мечты';
 
       if (!currentTabId) {
-        tasksList.innerHTML = '<div class="empty-state">Создайте первую вселенную 👆</div>';
-        totalSumBadge.style.display = 'none'; return;
+        tasksList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-orb">🪐</div>
+            <h3>Создайте первую вселенную</h3>
+            <p>Нажмите «+ Вселенная» сверху, чтобы добавить раздел (например: Покупки, Куда сходить, Путешествия)</p>
+          </div>`;
+        totalSumBadge.style.display = 'none';
+        progressWrapper.style.display = 'none';
+        return;
       }
 
-      let filteredTasks = Object.keys(allTasks).map(id => ({ id, ...allTasks[id] })).filter(task => task.catId === currentTabId);
+      // Все задачи текущей категории
+      const categoryTasks = Object.keys(allTasks)
+        .map(id => ({ id, ...allTasks[id] }))
+        .filter(task => task.catId === currentTabId);
 
-      if (filteredTasks.length === 0) {
-        tasksList.innerHTML = '<div class="empty-state">Тут пока пусто. Добавь мечту! ✨</div>';
-        totalSumBadge.style.display = 'none'; return;
+      // Статистика по текущей вкладке
+      const completedInCat = categoryTasks.filter(t => t.completed).length;
+      const totalInCat = categoryTasks.length;
+
+      if (totalInCat > 0) {
+        progressWrapper.style.display = 'flex';
+        const pct = Math.round((completedInCat / totalInCat) * 100);
+        progressFill.style.width = `${pct}%`;
+        progressLabel.innerText = `${completedInCat} из ${totalInCat} (${pct}%)`;
+      } else {
+        progressWrapper.style.display = 'none';
       }
 
-      filteredTasks.sort((a, b) => {
-        if (a.completed === b.completed) return b.createdAt - a.createdAt;
-        return a.completed ? 1 : -1;
-      });
-
+      // Считаем бюджет по всей активной категории
       let newTargetSum = 0;
-      let delay = 0;
-
-      filteredTasks.forEach(task => {
-        if (!task.completed) newTargetSum += extractPrice(task.desc);
-
-        // ОБЕРТКА КАРТОЧКИ С ГРАДИЕНТНОЙ РАМКОЙ
-        const wrapper = document.createElement('div');
-        wrapper.className = `card-wrapper ${task.completed ? 'completed' : ''}`;
-        wrapper.style.animationDelay = `${delay}s`;
-        wrapper.id = `wrapper-${task.id}`;
-        delay += 0.05;
-
-        let innerHTML = `<div class="card ${task.imageUrl ? 'has-image' : ''}">`;
-        if (task.imageUrl) {
-          innerHTML += `<div class="card-image-bg" style="background-image: url('${task.imageUrl}')"></div>`;
-        }
-
-        // --- НОВАЯ СТРОГАЯ FLEX-СЕТКА ---
-        innerHTML += `
-          <div class="card-content">
-            <div class="card-header">
-              
-              <!-- 1. Чекбокс слева -->
-              <div class="checkbox-container" id="check-${task.id}" onclick="handleCheck(event, '${task.id}', ${!task.completed})">
-                <div class="ripple"></div>
-                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </div>
-              
-              <!-- 2. Текст по центру -->
-              <div class="card-info">
-                <div class="card-title">${escapeHtml(task.title)}</div>
-                ${task.desc ? `<div class="card-price">${escapeHtml(task.desc)}</div>` : ''}
-              </div>
-              
-              <!-- 3. Кнопка удаления справа -->
-              <div class="delete-btn" onclick="animateDelete('${task.id}')">
-                <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
-              </div>
-
-            </div>
-          </div>
-        </div>`;
-
-        wrapper.innerHTML = innerHTML;
-        tasksList.appendChild(wrapper);
+      let completedSum = 0;
+      categoryTasks.forEach(t => {
+        const p = extractPrice(t.desc);
+        if (t.completed) completedSum += p;
+        else newTargetSum += p;
       });
 
-      // Логика отображения и анимации суммы
-      if (newTargetSum > 0) {
+      if (newTargetSum > 0 || completedSum > 0) {
         totalSumBadge.style.display = 'flex';
         if (newTargetSum !== currentSum) {
-          animateValue(currentSum, newTargetSum, 1000);
+          animateValue(currentSum, newTargetSum, 700);
           currentSum = newTargetSum;
         }
+        totalSumBadge.onclick = () => {
+          showToast(`В планах: ${newTargetSum.toLocaleString('ru-RU')} ₽ • Исполнено: ${completedSum.toLocaleString('ru-RU')} ₽`, '💎');
+        };
       } else {
         totalSumBadge.style.display = 'none';
         currentSum = 0;
       }
+
+      // Применяем фильтр и поиск
+      let filteredTasks = categoryTasks.filter(task => {
+        if (currentFilter === 'active' && task.completed) return false;
+        if (currentFilter === 'completed' && !task.completed) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const inTitle = (task.title || '').toLowerCase().includes(q);
+          const inDesc = (task.desc || '').toLowerCase().includes(q);
+          return inTitle || inDesc;
+        }
+        return true;
+      });
+
+      if (filteredTasks.length === 0) {
+        tasksList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-orb">✨</div>
+            <h3>${searchQuery || currentFilter !== 'all' ? 'Ничего не найдено' : 'Здесь пока пусто'}</h3>
+            <p>${searchQuery || currentFilter !== 'all' ? 'Попробуйте изменить фильтр или поисковый запрос' : 'Нажмите кнопку «+ Мечта» внизу справа, чтобы добавить первую карточку!'}</p>
+          </div>`;
+        return;
+      }
+
+      // Сортировка: сначала активные, затем новые сверху
+      filteredTasks.sort((a, b) => {
+        if (Boolean(a.completed) === Boolean(b.completed)) return (b.createdAt || 0) - (a.createdAt || 0);
+        return a.completed ? 1 : -1;
+      });
+
+      let delay = 0;
+
+      filteredTasks.forEach(task => {
+        const wrapper = document.createElement('div');
+        wrapper.className = `card-wrapper ${task.completed ? 'completed' : ''} ${shouldAnimateEntrance ? 'animate-enter' : ''}`;
+        if (shouldAnimateEntrance) {
+          wrapper.style.animationDelay = `${Math.min(delay, 0.4)}s`;
+          delay += 0.04;
+        }
+        wrapper.id = `wrapper-${task.id}`;
+
+        const detectedLink = task.link || extractFirstUrl(task.desc);
+        const safeImageUrl = task.imageUrl ? encodeURI(task.imageUrl) : '';
+
+        let cardHtml = `<div class="card ${task.imageUrl ? 'has-image' : ''}">`;
+
+        if (task.priority) {
+          cardHtml += `<div class="card-priority-tag">${escapeHtml(task.priority)}</div>`;
+        }
+
+        if (task.imageUrl) {
+          cardHtml += `
+            <div class="card-image-bg" style="background-image: url('${safeImageUrl}')"></div>
+            <button class="image-zoom-btn" data-zoom="${escapeHtml(task.imageUrl)}" title="Открыть фото">
+              <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            </button>
+          `;
+        }
+
+        cardHtml += `
+          <div class="card-content">
+            <div class="card-header">
+              <!-- 1. Чекбокс -->
+              <div class="checkbox-container" id="check-${task.id}">
+                <div class="ripple"></div>
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+
+              <!-- 2. Текст, цена и ссылка -->
+              <div class="card-info">
+                <div class="card-title">${escapeHtml(task.title || '')}</div>
+                ${(task.desc || detectedLink || (!task.imageUrl && task.priority)) ? `
+                  <div class="card-meta">
+                    ${task.desc ? `<div class="card-price">${escapeHtml(task.desc)}</div>` : ''}
+                    ${detectedLink ? `<a href="${escapeHtml(detectedLink)}" target="_blank" rel="noopener noreferrer" class="card-link-pill" onclick="event.stopPropagation()">🔗 Ссылка</a>` : ''}
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- 3. Кнопки редактирования и удаления -->
+              <div class="card-actions">
+                <button class="action-mini-btn edit" title="Редактировать">
+                  <svg viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                </button>
+                <button class="action-mini-btn delete" title="Удалить">
+                  <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+
+        wrapper.innerHTML = cardHtml;
+
+        // Обработчик чекбокса
+        const checkEl = wrapper.querySelector('.checkbox-container');
+        checkEl.addEventListener('click', () => handleCheck(task.id, !task.completed, checkEl));
+
+        // Обработчик зума фото
+        const zoomBtn = wrapper.querySelector('.image-zoom-btn');
+        if (zoomBtn) {
+          zoomBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox(task.imageUrl);
+          });
+        }
+
+        // Обработчик редактирования
+        wrapper.querySelector('.action-mini-btn.edit').addEventListener('click', () => openEditTaskModal(task));
+
+        // Обработчик удаления
+        wrapper.querySelector('.action-mini-btn.delete').addEventListener('click', () => confirmDeleteTask(task));
+
+        tasksList.appendChild(wrapper);
+      });
     }
 
-    function escapeHtml(text) { return text.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m])); }
+    function escapeHtml(text) {
+      return String(text || '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+      }[m]));
+    }
 
     // =================================================================
-    // ВЗАИМОДЕЙСТВИЯ: АНИМАЦИИ ВЫПОЛНЕНИЯ И УДАЛЕНИЯ
+    // 7. ДЕЙСТВИЯ С КАРТОЧКАМИ И КАТЕГОРИЯМИ
     // =================================================================
-    window.handleCheck = (event, taskId, status) => {
-      // Запуск анимации Ripple
-      const checkBtn = document.getElementById(`check-${taskId}`);
-      checkBtn.classList.add('animating');
-      
-      if (status) { // Если выполнили
-        const rect = checkBtn.getBoundingClientRect();
-        window.burstConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    function handleCheck(taskId, newStatus, checkEl) {
+      checkEl.classList.add('animating');
+      if (navigator.vibrate) navigator.vibrate(25);
+
+      if (newStatus) {
+        const rect = checkEl.getBoundingClientRect();
+        burstConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        playSuccessChime();
+        showToast('Мечта исполнена!', '🎉');
       }
 
-      // Небольшая задержка перед отправкой в базу, чтобы увидеть анимацию
       setTimeout(() => {
-        update(ref(db, `app_data/tasks/${taskId}`), { completed: status });
-      }, 300);
-    };
+        update(ref(db, `app_data/tasks/${taskId}`), { completed: newStatus });
+      }, 260);
+    }
 
-    window.animateDelete = (taskId) => {
-      if(confirm('Точно удалить цель?')) {
-        const wrapper = document.getElementById(`wrapper-${taskId}`);
-        wrapper.classList.add('removing'); // Класс сжимает карточку
-        setTimeout(() => {
-          remove(ref(db, `app_data/tasks/${taskId}`));
-        }, 300); // Ждем конец анимации, затем удаляем из базы
-      }
-    };
-
-    window.confirmDeleteGroup = (catId) => {
-      if(confirm('Удалить вселенную и ВСЕ карточки в ней?')) {
-        const tasks = localData.tasks || {};
-        Object.keys(tasks).forEach(id => {
-          if (tasks[id].catId === catId) remove(ref(db, `app_data/tasks/${id}`));
-        });
-        remove(ref(db, `app_data/categories/${catId}`));
-        if (currentTabId === catId) currentTabId = null;
-      }
-    };
+    function confirmDeleteTask(task) {
+      openConfirmDialog(
+        'Удалить мечту?',
+        `Карточка «${task.title}» будет удалена безвозвратно.`,
+        () => {
+          const wrapper = document.getElementById(`wrapper-${task.id}`);
+          if (wrapper) wrapper.classList.add('removing');
+          setTimeout(() => {
+            remove(ref(db, `app_data/tasks/${task.id}`));
+            showToast('Карточка удалена', '🗑️');
+          }, 280);
+        }
+      );
+    }
 
     // =================================================================
-    // МОДАЛКИ И ФАЙЛЫ
+    // 8. УПРАВЛЕНИЕ МОДАЛКАМИ
     // =================================================================
-    const modals = document.querySelectorAll('.modal-backdrop');
+    window.closeAllModals = () => {
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+    };
+
+    window.openLightbox = (url) => {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightboxImg').src = url;
+      lb.classList.add('active');
+    };
+
+    window.closeLightbox = () => {
+      document.getElementById('lightbox').classList.remove('active');
+    };
+
+    function openConfirmDialog(title, message, onConfirm) {
+      document.getElementById('confirmTitle').innerText = title;
+      document.getElementById('confirmMessage').innerText = message;
+      const btn = document.getElementById('confirmActionBtn');
+      btn.onclick = () => {
+        closeAllModals();
+        onConfirm();
+      };
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    // Выбор приоритета в модалке
+    document.querySelectorAll('#prioritySelector .priority-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#prioritySelector .priority-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        selectedPriority = chip.dataset.prio || '';
+      });
+    });
+
+    function populateCategorySelect(selectedCatId) {
+      const select = document.getElementById('taskCategorySelect');
+      select.innerHTML = '';
+      const categories = localData.categories || {};
+      Object.keys(categories).forEach(catId => {
+        const opt = document.createElement('option');
+        opt.value = catId;
+        opt.innerText = categories[catId].name;
+        if (catId === selectedCatId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    // Открыть модалку создания новой мечты
     document.getElementById('fabBtn').onclick = () => {
-      if(!currentTabId) return alert("Сначала создайте группу!");
+      if (!currentTabId) {
+        openCreateGroupModal();
+        showToast('Сначала создайте первую вселенную', '🪐');
+        return;
+      }
+      editingTaskId = null;
+      selectedFile = null;
+      existingImageUrl = null;
+      selectedPriority = '';
+
+      document.getElementById('taskModalTitle').innerText = 'Добавить мечту';
+      document.getElementById('saveTaskBtnText').innerText = 'Создать';
+      document.getElementById('taskTitle').value = '';
+      document.getElementById('taskPrice').value = '';
+      document.getElementById('taskLink').value = '';
+      document.getElementById('taskImage').value = '';
+      document.getElementById('imagePreview').style.display = 'none';
+      document.getElementById('removeImageBtn').style.display = 'none';
+      document.getElementById('categorySelectGroup').style.display = 'none';
+
+      document.querySelectorAll('#prioritySelector .priority-chip').forEach(c => {
+        c.classList.toggle('selected', c.dataset.prio === '');
+      });
+
       document.getElementById('taskModal').classList.add('active');
     };
-    
-    function hideModals() {
-      modals.forEach(m => m.classList.remove('active'));
-      document.getElementById('taskTitle').value = ''; 
-      document.getElementById('taskPrice').value = ''; 
+
+    // Открыть модалку редактирования существующей мечты
+    function openEditTaskModal(task) {
+      editingTaskId = task.id;
+      selectedFile = null;
+      existingImageUrl = task.imageUrl || null;
+      selectedPriority = task.priority || '';
+
+      document.getElementById('taskModalTitle').innerText = 'Редактировать мечту';
+      document.getElementById('saveTaskBtnText').innerText = 'Сохранить изменения';
+      document.getElementById('taskTitle').value = task.title || '';
+      document.getElementById('taskPrice').value = task.desc || '';
+      document.getElementById('taskLink').value = task.link || '';
       document.getElementById('taskImage').value = '';
-      document.getElementById('imagePreview').style.display = 'none'; selectedFile = null;
-      document.getElementById('groupName').value = '';
+
+      populateCategorySelect(task.catId);
+      document.getElementById('categorySelectGroup').style.display = 'block';
+
+      document.querySelectorAll('#prioritySelector .priority-chip').forEach(c => {
+        c.classList.toggle('selected', c.dataset.prio === selectedPriority);
+      });
+
+      const preview = document.getElementById('imagePreview');
+      const removeBtn = document.getElementById('removeImageBtn');
+      if (existingImageUrl) {
+        preview.style.backgroundImage = `url('${encodeURI(existingImageUrl)}')`;
+        preview.style.display = 'block';
+        removeBtn.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+        removeBtn.style.display = 'none';
+      }
+
+      document.getElementById('taskModal').classList.add('active');
     }
 
-    modals.forEach(modal => modal.addEventListener('click', (e) => { if (e.target === modal) hideModals(); }));
+    // Удаление фото из превью
+    document.getElementById('removeImageBtn').onclick = (e) => {
+      e.stopPropagation();
+      selectedFile = null;
+      existingImageUrl = null;
+      document.getElementById('taskImage').value = '';
+      document.getElementById('imagePreview').style.display = 'none';
+      document.getElementById('removeImageBtn').style.display = 'none';
+    };
 
+    // Выбор файла
     document.getElementById('taskImage').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
         selectedFile = file;
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function(ev) {
           const preview = document.getElementById('imagePreview');
-          preview.style.backgroundImage = `url(${e.target.result})`;
+          preview.style.backgroundImage = `url(${ev.target.result})`;
           preview.style.display = 'block';
-        }
+          document.getElementById('removeImageBtn').style.display = 'block';
+        };
         reader.readAsDataURL(file);
       }
     });
 
+    // Сохранение мечты (Создание или Обновление)
     document.getElementById('saveTaskBtn').onclick = async () => {
       const title = document.getElementById('taskTitle').value.trim();
       const desc = document.getElementById('taskPrice').value.trim();
-      if (!title) return;
+      const link = document.getElementById('taskLink').value.trim();
+
+      if (!title) {
+        showToast('Введите название мечты', '⚠️');
+        return;
+      }
 
       const btn = document.getElementById('saveTaskBtn');
-      btn.querySelector('.btn-text').style.display = 'none'; 
+      btn.querySelector('.btn-text').style.display = 'none';
       btn.querySelector('.loader').style.display = 'block';
       btn.disabled = true;
 
-      let imageUrl = null;
+      let finalImageUrl = existingImageUrl || null;
+
       if (selectedFile) {
         try {
-          const fileRef = storageRef(storage, `images/${Date.now()}_${selectedFile.name}`);
-          const snapshot = await uploadBytes(fileRef, selectedFile);
-          imageUrl = await getDownloadURL(snapshot.ref);
+          const compressedBlob = await compressImage(selectedFile);
+          const safeName = selectedFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const fileRef = storageRef(storage, `images/${Date.now()}_${safeName}`);
+          const snapshot = await uploadBytes(fileRef, compressedBlob);
+          finalImageUrl = await getDownloadURL(snapshot.ref);
         } catch (error) {
-          alert("Ошибка загрузки. Проверь Storage!");
+          showToast('Не удалось загрузить фото в Storage', '⚠️');
         }
       }
 
-      await set(push(ref(db, 'app_data/tasks')), { catId: currentTabId, title, desc, imageUrl, completed: false, createdAt: Date.now() });
+      try {
+        if (editingTaskId) {
+          const targetCatId = document.getElementById('taskCategorySelect').value || currentTabId;
+          await update(ref(db, `app_data/tasks/${editingTaskId}`), {
+            catId: targetCatId,
+            title,
+            desc,
+            link: link || null,
+            priority: selectedPriority || null,
+            imageUrl: finalImageUrl
+          });
+          showToast('Изменения сохранены', '✨');
+        } else {
+          await set(push(ref(db, 'app_data/tasks')), {
+            catId: currentTabId,
+            title,
+            desc,
+            link: link || null,
+            priority: selectedPriority || null,
+            imageUrl: finalImageUrl,
+            completed: false,
+            createdAt: Date.now()
+          });
+          showToast('Мечта добавлена во вселенную!', '🚀');
+        }
+      } catch (err) {
+        showToast('Ошибка сохранения в базу', '❌');
+      }
 
-      btn.querySelector('.btn-text').style.display = 'block'; 
+      btn.querySelector('.btn-text').style.display = 'block';
       btn.querySelector('.loader').style.display = 'none';
       btn.disabled = false;
-      hideModals();
+      closeAllModals();
     };
 
-    document.getElementById('saveGroupBtn').onclick = () => {
+    // =================================================================
+    // 9. СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ВСЕЛЕННЫХ (КАТЕГОРИЙ)
+    // =================================================================
+    function openCreateGroupModal() {
+      editingGroupId = null;
+      document.getElementById('groupModalTitle').innerText = 'Новая вселенная';
+      document.getElementById('groupName').value = '';
+      document.getElementById('deleteGroupBtn').style.display = 'none';
+      document.getElementById('groupModal').classList.add('active');
+    }
+
+    function openEditGroupModal(catId) {
+      const cat = localData.categories?.[catId];
+      if (!cat) return;
+      editingGroupId = catId;
+      document.getElementById('groupModalTitle').innerText = 'Настройки вселенной';
+      document.getElementById('groupName').value = cat.name || '';
+      document.getElementById('deleteGroupBtn').style.display = 'block';
+      document.getElementById('groupModal').classList.add('active');
+    }
+
+    document.getElementById('saveGroupBtn').onclick = async () => {
       const name = document.getElementById('groupName').value.trim();
-      if (!name) return;
-      const newCatRef = push(ref(db, 'app_data/categories'));
-      set(newCatRef, { name: name, createdAt: Date.now() }).then(() => {
+      if (!name) {
+        showToast('Введите название вселенной', '⚠️');
+        return;
+      }
+
+      if (editingGroupId) {
+        await update(ref(db, `app_data/categories/${editingGroupId}`), { name });
+        showToast('Название обновлено', '✨');
+      } else {
+        const newCatRef = push(ref(db, 'app_data/categories'));
+        await set(newCatRef, { name, createdAt: Date.now() });
         currentTabId = newCatRef.key;
-        hideModals();
-      });
+        localStorage.setItem('ourspace_last_tab', currentTabId);
+        showToast('Новая вселенная создана!', '🪐');
+      }
+      closeAllModals();
     };
+
+    document.getElementById('deleteGroupBtn').onclick = () => {
+      if (!editingGroupId) return;
+      const catName = localData.categories?.[editingGroupId]?.name || '';
+      const catIdToDelete = editingGroupId;
+      closeAllModals();
+
+      openConfirmDialog(
+        'Удалить вселенную?',
+        `Раздел «${catName}» и все карточки внутри него будут удалены.`,
+        () => {
+          const tasks = localData.tasks || {};
+          Object.keys(tasks).forEach(id => {
+            if (tasks[id].catId === catIdToDelete) {
+              remove(ref(db, `app_data/tasks/${id}`));
+            }
+          });
+          remove(ref(db, `app_data/categories/${catIdToDelete}`));
+          if (currentTabId === catIdToDelete) currentTabId = null;
+          showToast('Вселенная удалена', '🗑️');
+        }
+      );
+    };
+
+    // =================================================================
+    // 10. ПОИСК, ФИЛЬТРЫ И ПЕРЕКЛЮЧЕНИЕ СЕТКИ
+    // =================================================================
+    document.getElementById('searchToggleBtn').onclick = function() {
+      const drawer = document.getElementById('controlsDrawer');
+      const isOpen = drawer.classList.toggle('open');
+      this.classList.toggle('active', isOpen);
+      if (isOpen) document.getElementById('searchInput').focus();
+    };
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value.trim();
+      renderTasks();
+    });
+
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentFilter = pill.dataset.filter;
+        renderTasks();
+      });
+    });
+
+    viewModeBtn.onclick = () => {
+      isBentoMode = !isBentoMode;
+      localStorage.setItem('ourspace_bento', isBentoMode);
+      tasksList.classList.toggle('bento-mode', isBentoMode);
+      viewModeBtn.classList.toggle('active', isBentoMode);
+      showToast(isBentoMode ? 'Компактная сетка (2 колонки)' : 'Крупные карточки', '💠');
+    };
+
+    // Закрытие модалок по клику на фон
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeAllModals();
+      });
+    });
   </script>
 </body>
 </html>
